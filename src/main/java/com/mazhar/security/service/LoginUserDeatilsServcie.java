@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+@Component
 public class LoginUserDeatilsServcie implements UserDetailsService {
 
 
@@ -17,7 +19,8 @@ public class LoginUserDeatilsServcie implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        User user = this.userRepository.findByUsername(username);
+        var user = this.userRepository.findByUsername(username)
+                .orElse(new User());
         return new LoginUser(user);
     }
 }

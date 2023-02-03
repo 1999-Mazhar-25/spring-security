@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HomeCont {
 
-    @GetMapping("/")
+    @GetMapping("/auth")
     public String hello(){
-        return "this is in controller";
+        return "This is 2 Step Authentication !!!";
     }
 }

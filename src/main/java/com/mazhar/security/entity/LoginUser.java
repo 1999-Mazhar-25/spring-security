@@ -1,24 +1,26 @@
 package com.mazhar.security.entity;
 
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 public class LoginUser implements UserDetails {
 
-    @Autowired
-    private User user;
+    private final User  user;
 
 
     public LoginUser(User user) {
+        this.user = user;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(()->"read");
+        return Arrays.asList(()->"read");
     }
 
     @Override
