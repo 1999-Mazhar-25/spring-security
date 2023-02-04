@@ -1,5 +1,7 @@
 package com.mazhar.security.Controller;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -8,6 +10,12 @@ public class HomeCont {
 
     @GetMapping("/auth")
     public String hello(){
-        return "This is 2 Step Authentication !!!";
+        Authentication auth =
+                SecurityContextHolder
+                        .getContext()
+                        .getAuthentication();
+
+        System.out.println(auth.getName());
+        return "Hi Authenticated Object ??" ;
     }
 }

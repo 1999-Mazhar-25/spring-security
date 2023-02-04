@@ -1,8 +1,9 @@
 package com.mazhar.security.filter;
 
-import com.mazhar.security.auth.OtpAuthToken;
+import com.mazhar.security.auth.SecretKeyAuthToken;
 import com.mazhar.security.auth.UserPasswordAuthToken;
 import com.mazhar.security.entity.SecretKey;
+import com.mazhar.security.repo.ReceiptManager;
 import com.mazhar.security.repo.SecretKeyRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,6 +28,9 @@ public class UserPasswordAuthFilter extends OncePerRequestFilter {
     @Autowired
     SecretKeyRepo secretKeyRepo;
 
+    @Autowired
+    ReceiptManager receiptManager;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
@@ -49,12 +53,17 @@ public class UserPasswordAuthFilter extends OncePerRequestFilter {
 
             secretKeyRepo.save(secretKey);
         }
-        else
-        {
-           var auth = authenticationManager.authenticate
-                   (new OtpAuthToken(uname, password));
+        else {
+            // through the key
+            var auth = authenticationManager.authenticate
+                    (new SecretKeyAuthToken(uname,key));
 
-           response.setHeader("Authorization", UUID.randomUUID().toString());
+            //store inside db
+            String str = UUID.randomUUID().toString();
+            receiptManager.add(str);
+
+            // generate a token
+            response.setHeader("Authorization", str);
         }
 
 
@@ -65,7 +74,7 @@ public class UserPasswordAuthFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest req)
             throws ServletException {
-        return !req.getServletPath().equals("/auth");
+        return !req.getServletPath().equals("/login");
     }
 
 

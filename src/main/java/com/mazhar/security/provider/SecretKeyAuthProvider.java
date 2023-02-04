@@ -1,6 +1,6 @@
 package com.mazhar.security.provider;
 
-import com.mazhar.security.auth.OtpAuthToken;
+import com.mazhar.security.auth.SecretKeyAuthToken;
 import com.mazhar.security.auth.UserPasswordAuthToken;
 import com.mazhar.security.repo.SecretKeyRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import java.util.Arrays;
 
 @Component
-public class OtpAuthProvider implements AuthenticationProvider {
+public class SecretKeyAuthProvider implements AuthenticationProvider {
 
     @Autowired
     SecretKeyRepo secretKeyRepo;
@@ -25,7 +25,7 @@ public class OtpAuthProvider implements AuthenticationProvider {
        var user = secretKeyRepo.findByUsername(authentication.getName());
        if(user.isPresent())
        {
-           return new OtpAuthToken(authentication.getName(),
+           return new SecretKeyAuthToken(authentication.getName(),
                    authentication.getCredentials(), Arrays.asList(()->"read"));
        }
        throw new BadCredentialsException("Failed OTP Auth provider");
@@ -34,6 +34,6 @@ public class OtpAuthProvider implements AuthenticationProvider {
 
     @Override
     public boolean supports(Class<?> authentication) {
-        return OtpAuthToken.class.equals(authentication);
+        return SecretKeyAuthToken.class.equals(authentication);
     }
 }

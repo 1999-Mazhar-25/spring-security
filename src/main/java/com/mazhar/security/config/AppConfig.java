@@ -1,7 +1,9 @@
 package com.mazhar.security.config;
 
+import com.mazhar.security.filter.ReceiptAuthFilter;
 import com.mazhar.security.filter.UserPasswordAuthFilter;
-import com.mazhar.security.provider.OtpAuthProvider;
+import com.mazhar.security.provider.ReceiptAuthProvider;
+import com.mazhar.security.provider.SecretKeyAuthProvider;
 import com.mazhar.security.provider.UserPasswordAuthProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -24,17 +26,25 @@ public class AppConfig extends WebSecurityConfigurerAdapter {
     UserPasswordAuthProvider provider;
 
     @Autowired
-    OtpAuthProvider otpAuthProvider;
+    SecretKeyAuthProvider secretKeyAuthProvider;
+
+    @Autowired
+    ReceiptAuthProvider receiptAuthProvider;
+
+/*    @Autowired
+    ReceiptAuthFilter receiptAuthFilter;*/
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(provider)
-                .authenticationProvider(otpAuthProvider);
+                .authenticationProvider(secretKeyAuthProvider)
+                .authenticationProvider(receiptAuthProvider);
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.addFilterAt(filter, BasicAuthenticationFilter.class);
+        http.addFilterAt(filter, BasicAuthenticationFilter.class)
+                .addFilterBefore(receiptAuthFilter(), BasicAuthenticationFilter.class);
     }
 
     @Override
@@ -46,6 +56,12 @@ public class AppConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return NoOpPasswordEncoder.getInstance();
+    }
+
+    @Bean
+    public ReceiptAuthFilter receiptAuthFilter()
+    {
+        return new ReceiptAuthFilter();
     }
 
 }
