@@ -1,13 +1,23 @@
 package com.mazhar.security.Controller;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PostMapping;
 
-@RestController
+@Controller
 public class HomeCont {
 
-    @GetMapping("/")
+    @GetMapping("/home")
     public String hello(){
-        return "this is in controller";
+        return "home.html";
+    }
+
+
+
+    @PostMapping("/save")
+    public String save(String data){
+
+        System.out.println("this is data from server"+ data);
+        return "home.html";
     }
 }
